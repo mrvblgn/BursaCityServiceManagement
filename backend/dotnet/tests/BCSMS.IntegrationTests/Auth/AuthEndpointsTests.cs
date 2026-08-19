@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using BCSMS.API.Contracts.Auth;
 using BCSMS.Application.Auth.Login;
 using BCSMS.Application.Auth.Register;
@@ -14,7 +15,11 @@ namespace BCSMS.IntegrationTests.Auth;
 public class AuthEndpointsTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
-    private readonly JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true };
+    private readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        Converters = { new JsonStringEnumConverter() }
+    };
 
     public AuthEndpointsTests(CustomWebApplicationFactory factory)
     {
@@ -37,6 +42,9 @@ public class AuthEndpointsTests : IClassFixture<CustomWebApplicationFactory>
 
         // Assert
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+
+        var json = await response.Content.ReadAsStringAsync();
+        Assert.Contains("\"role\":\"Citizen\"", json);
 
         var result = await response.Content.ReadFromJsonAsync<RegisterResponse>(_jsonOptions);
         Assert.NotNull(result);
@@ -85,6 +93,10 @@ public class AuthEndpointsTests : IClassFixture<CustomWebApplicationFactory>
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
+
+        var json = await loginResponse.Content.ReadAsStringAsync();
+        Assert.Contains("\"role\":\"Citizen\"", json);
+
         var result = await loginResponse.Content.ReadFromJsonAsync<LoginResponse>(_jsonOptions);
         Assert.NotNull(result);
         Assert.False(string.IsNullOrWhiteSpace(result.AccessToken));

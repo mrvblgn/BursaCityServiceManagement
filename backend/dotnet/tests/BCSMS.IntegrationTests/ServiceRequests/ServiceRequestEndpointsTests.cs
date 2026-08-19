@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using BCSMS.API.Contracts.Auth;
 using BCSMS.API.Contracts.ServiceRequests;
 using BCSMS.Application.Auth.Login;
@@ -10,6 +11,7 @@ using BCSMS.Application.ServiceRequests.Create;
 using BCSMS.Application.ServiceRequests.GetById;
 using BCSMS.Application.ServiceRequests.GetMy;
 using BCSMS.Domain.Entities;
+using BCSMS.Domain.Enums;
 using BCSMS.Infrastructure.Persistence;
 using BCSMS.IntegrationTests.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +24,11 @@ public class ServiceRequestEndpointsTests : IClassFixture<CustomWebApplicationFa
 {
     private readonly CustomWebApplicationFactory _factory;
     private readonly HttpClient _client;
-    private readonly JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true };
+    private readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        Converters = { new JsonStringEnumConverter() }
+    };
 
     public ServiceRequestEndpointsTests(CustomWebApplicationFactory factory)
     {
@@ -106,11 +112,15 @@ public class ServiceRequestEndpointsTests : IClassFixture<CustomWebApplicationFa
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         Assert.NotNull(response.Headers.Location);
 
+        var json = await response.Content.ReadAsStringAsync();
+        Assert.Contains("\"status\":\"New\"", json);
+
         var result = await response.Content.ReadFromJsonAsync<CreateServiceRequestResponse>(_jsonOptions);
         Assert.NotNull(result);
         Assert.NotEqual(Guid.Empty, result.Id);
         Assert.Equal(request.Title, result.Title);
         Assert.Equal(categoryId, result.CategoryId);
+        Assert.Equal(RequestStatus.New, result.Status);
     }
 
     [Fact]
