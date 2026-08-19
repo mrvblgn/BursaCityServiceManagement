@@ -1,8 +1,10 @@
 using BCSMS.Application.Abstractions.Persistence;
 using BCSMS.Application.Common.Models;
 using BCSMS.Application.ServiceRequests.Common;
+using BCSMS.Application.ServiceRequests.Employee.GetAssigned;
 using BCSMS.Application.ServiceRequests.GetById;
 using BCSMS.Application.ServiceRequests.GetMy;
+using BCSMS.Application.ServiceRequests.Manager.GetMunicipal;
 using BCSMS.Domain.Entities;
 using BCSMS.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +23,12 @@ public class ServiceRequestRepository : IServiceRequestRepository
     public async Task AddAsync(ServiceRequest serviceRequest, CancellationToken cancellationToken = default)
     {
         await _dbContext.ServiceRequests.AddAsync(serviceRequest, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateAsync(ServiceRequest serviceRequest, CancellationToken cancellationToken = default)
+    {
+        _dbContext.ServiceRequests.Update(serviceRequest);
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
@@ -124,5 +132,107 @@ public class ServiceRequestRepository : IServiceRequestRepository
             .ToListAsync(cancellationToken);
 
         return new PagedResult<ServiceRequestSummaryDto>(items, totalCount, pageNumber, pageSize);
+    }
+
+    public async Task<PagedResult<MunicipalServiceRequestSummaryDto>> GetMunicipalSummariesAsync(
+        RequestStatus? statusFilter,
+        Guid? categoryId,
+        Guid? departmentId,
+        Priority? priority,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        var baseQuery = from r in _dbContext.ServiceRequests.AsNoTracking()
+                        join c in _dbContext.Categories.AsNoTracking() on r.CategoryId equals c.Id
+                        join citizen in _dbContext.Users.AsNoTracking() on r.CitizenId equals citizen.Id
+                        from dept in _dbContext.Departments.AsNoTracking().Where(d => d.Id == r.AssignedDepartmentId).DefaultIfEmpty()
+                        from emp in _dbContext.Users.AsNoTracking().Where(u => u.Id == r.AssignedEmployeeId).DefaultIfEmpty()
+                        select new
+                        {
+                            Request = r,
+                            CategoryName = c.Name,
+                            CitizenFirstName = citizen.Name.FirstName,
+                            CitizenLastName = citizen.Name.LastName,
+                            DepartmentName = dept != null ? dept.Name : null,
+                            EmployeeFirstName = emp != null ? emp.Name.FirstName : null,
+                            EmployeeLastName = emp != null ? emp.Name.LastName : null
+                        };
+
+        if (statusFilter.HasValue)
+            baseQuery = baseQuery.Where(x => x.Request.Status == statusFilter.Value);
+
+        if (categoryId.HasValue)
+            baseQuery = baseQuery.Where(x => x.Request.CategoryId == categoryId.Value);
+
+        if (departmentId.HasValue)
+            baseQuery = baseQuery.Where(x => x.Request.AssignedDepartmentId == departmentId.Value);
+
+        if (priority.HasValue)
+            baseQuery = baseQuery.Where(x => x.Request.Priority == priority.Value);
+
+        var totalCount = await baseQuery.CountAsync(cancellationToken);
+
+        var items = await baseQuery
+            .OrderByDescending(x => x.Request.CreatedAt)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .Select(x => new MunicipalServiceRequestSummaryDto(
+                x.Request.Id,
+                x.Request.Title,
+                x.Request.CategoryId,
+                x.CategoryName,
+                x.Request.CitizenId,
+                x.CitizenFirstName + " " + x.CitizenLastName,
+                x.Request.Status,
+                x.Request.Priority,
+                x.Request.AssignedDepartmentId,
+                x.DepartmentName,
+                x.Request.AssignedEmployeeId,
+                x.EmployeeFirstName != null ? x.EmployeeFirstName + " " + x.EmployeeLastName : null,
+                x.Request.Location != null
+                    ? new LocationDto(x.Request.Location.Latitude, x.Request.Location.Longitude, x.Request.Location.AddressText)
+                    : null,
+                x.Request.CreatedAt))
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<MunicipalServiceRequestSummaryDto>(items, totalCount, pageNumber, pageSize);
+    }
+
+    public async Task<PagedResult<EmployeeServiceRequestSummaryDto>> GetSummariesByAssignedEmployeeIdAsync(
+        Guid employeeId,
+        RequestStatus? statusFilter,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        var baseQuery = from r in _dbContext.ServiceRequests.AsNoTracking()
+                        where r.AssignedEmployeeId == employeeId
+                        join c in _dbContext.Categories.AsNoTracking() on r.CategoryId equals c.Id
+                        select new { Request = r, CategoryName = c.Name };
+
+        if (statusFilter.HasValue)
+            baseQuery = baseQuery.Where(x => x.Request.Status == statusFilter.Value);
+
+        var totalCount = await baseQuery.CountAsync(cancellationToken);
+
+        var items = await baseQuery
+            .OrderByDescending(x => x.Request.CreatedAt)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .Select(x => new EmployeeServiceRequestSummaryDto(
+                x.Request.Id,
+                x.Request.Title,
+                x.Request.CategoryId,
+                x.CategoryName,
+                x.Request.Status,
+                x.Request.Priority,
+                x.Request.Location != null
+                    ? new LocationDto(x.Request.Location.Latitude, x.Request.Location.Longitude, x.Request.Location.AddressText)
+                    : null,
+                x.Request.CreatedAt))
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<EmployeeServiceRequestSummaryDto>(items, totalCount, pageNumber, pageSize);
     }
 }

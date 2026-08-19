@@ -1,4 +1,5 @@
 using BCSMS.Infrastructure.Persistence;
+using BCSMS.Infrastructure.Persistence.Seeding;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
@@ -10,6 +11,7 @@ namespace BCSMS.IntegrationTests.Infrastructure;
 /// <summary>
 /// WebApplicationFactory configured with SQLite In-Memory database for isolated integration testing.
 /// Keeps the SQLite in-memory connection open for the entire lifetime of the test host.
+/// Seeds deterministic development data for testing municipal workflows.
 /// </summary>
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
@@ -37,11 +39,14 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
                 options.UseSqlite(_connection);
             });
 
-            // Ensure database schema is created
+            // Ensure database schema is created and seed data initialized
             var sp = services.BuildServiceProvider();
             using var scope = sp.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<BcsmsDbContext>();
             db.Database.EnsureCreated();
+
+            var seeder = scope.ServiceProvider.GetRequiredService<IDbSeeder>();
+            seeder.SeedDevelopmentDataAsync().GetAwaiter().GetResult();
         });
     }
 

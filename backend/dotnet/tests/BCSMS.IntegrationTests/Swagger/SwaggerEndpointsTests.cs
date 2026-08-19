@@ -36,5 +36,14 @@ public class SwaggerEndpointsTests : IClassFixture<CustomWebApplicationFactory>
         Assert.Equal("http", bearerScheme.GetProperty("type").GetString());
         Assert.Equal("bearer", bearerScheme.GetProperty("scheme").GetString());
         Assert.Equal("JWT", bearerScheme.GetProperty("bearerFormat").GetString());
+
+        // Check paths exist
+        var paths = root.GetProperty("paths");
+        Assert.True(paths.TryGetProperty("/api/manager/service-requests", out _));
+        Assert.True(paths.TryGetProperty("/api/manager/service-requests/{id}/review", out _));
+        Assert.True(paths.TryGetProperty("/api/manager/service-requests/{id}/assign", out _));
+        Assert.True(paths.TryGetProperty("/api/employee/service-requests", out _));
+        Assert.True(paths.TryGetProperty("/api/employee/service-requests/{id}/start", out _));
+        Assert.True(paths.TryGetProperty("/api/employee/service-requests/{id}/resolve", out _));
     }
 }
