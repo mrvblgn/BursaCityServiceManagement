@@ -1,7 +1,9 @@
 using BCSMS.Application.Abstractions.Persistence;
+using BCSMS.Application.Abstractions.Security;
 using BCSMS.Application.Abstractions.Time;
 using BCSMS.Infrastructure.Persistence;
 using BCSMS.Infrastructure.Persistence.Repositories;
+using BCSMS.Infrastructure.Security;
 using BCSMS.Infrastructure.Time;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace BCSMS.Infrastructure;
 
 /// <summary>
-/// Registers infrastructure services (database, repositories, time provider, etc.) into the DI container.
+/// Registers infrastructure services (database, repositories, time provider, security, etc.) into the DI container.
 /// </summary>
 public static class DependencyInjection
 {
@@ -24,8 +26,13 @@ public static class DependencyInjection
         services.AddDbContext<BcsmsDbContext>(options =>
             options.UseSqlServer(connectionString));
 
-        // Abstractions / Services
+        // Options
+        services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
+
+        // Time & Security Services
         services.AddSingleton<IClock, SystemClock>();
+        services.AddSingleton<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
         // Repositories
         services.AddScoped<IUserRepository, UserRepository>();

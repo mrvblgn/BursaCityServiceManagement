@@ -14,4 +14,24 @@ public class FakeUserRepository : IUserRepository
         _users.TryGetValue(id, out var user);
         return Task.FromResult(user);
     }
+
+    public Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
+    {
+        var normalizedEmail = email.Trim().ToLowerInvariant();
+        var user = _users.Values.FirstOrDefault(u => u.Contact.Email == normalizedEmail);
+        return Task.FromResult(user);
+    }
+
+    public Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default)
+    {
+        var normalizedEmail = email.Trim().ToLowerInvariant();
+        var exists = _users.Values.Any(u => u.Contact.Email == normalizedEmail);
+        return Task.FromResult(exists);
+    }
+
+    public Task AddAsync(User user, CancellationToken cancellationToken = default)
+    {
+        _users[user.Id] = user;
+        return Task.CompletedTask;
+    }
 }

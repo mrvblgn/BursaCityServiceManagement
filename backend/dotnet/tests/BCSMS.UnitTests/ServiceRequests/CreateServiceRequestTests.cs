@@ -35,6 +35,7 @@ public class CreateServiceRequestTests
             citizenId,
             new FullName("Ali", "Yilmaz"),
             new ContactInfo("ali@bursa.bel.tr"),
+            "hashed_password_123",
             UserRole.Citizen,
             departmentId: null,
             _clock.UtcNow);
@@ -99,6 +100,7 @@ public class CreateServiceRequestTests
             citizenId,
             new FullName("Fatma", "Demir"),
             new ContactInfo("fatma@bursa.bel.tr"),
+            "hashed_password_123",
             UserRole.Citizen,
             null,
             _clock.UtcNow);
@@ -128,6 +130,7 @@ public class CreateServiceRequestTests
             employeeId,
             new FullName("Mehmet", "Oz"),
             new ContactInfo("mehmet@bursa.bel.tr"),
+            "hashed_password_123",
             UserRole.Employee,
             deptId,
             _clock.UtcNow);
@@ -155,6 +158,7 @@ public class CreateServiceRequestTests
             citizenId,
             new FullName("Ayse", "Kaya"),
             new ContactInfo("ayse@bursa.bel.tr"),
+            "hashed_password_123",
             UserRole.Citizen,
             null,
             _clock.UtcNow);
@@ -178,6 +182,7 @@ public class CreateServiceRequestTests
             citizenId,
             new FullName("Ayse", "Kaya"),
             new ContactInfo("ayse@bursa.bel.tr"),
+            "hashed_password_123",
             UserRole.Citizen,
             null,
             _clock.UtcNow);

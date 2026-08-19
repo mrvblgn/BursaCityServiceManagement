@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BCSMS.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(BcsmsDbContext))]
-    [Migration("20260819125423_InitialCreate")]
+    [Migration("20260819131409_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -264,6 +264,11 @@ namespace BCSMS.Infrastructure.Persistence.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Role")
                         .IsRequired()

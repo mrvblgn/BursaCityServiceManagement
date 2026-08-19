@@ -12,6 +12,7 @@ public class User : BaseEntity
 {
     public FullName Name { get; private set; } = default!;
     public ContactInfo Contact { get; private set; } = default!;
+    public string PasswordHash { get; private set; } = default!;
     public UserRole Role { get; private set; }
 
     /// <summary>
@@ -29,12 +30,16 @@ public class User : BaseEntity
         // For EF Core
     }
 
-    public User(Guid id, FullName name, ContactInfo contact, UserRole role,
+    public User(Guid id, FullName name, ContactInfo contact, string passwordHash, UserRole role,
         Guid? departmentId, DateTime createdAt)
         : base(id)
     {
+        if (string.IsNullOrWhiteSpace(passwordHash))
+            throw new DomainException("Password hash is required.");
+
         Name = name ?? throw new DomainException("User name is required.");
         Contact = contact ?? throw new DomainException("User contact information is required.");
+        PasswordHash = passwordHash.Trim();
         Role = role;
         IsActive = true;
         CreatedAt = createdAt;

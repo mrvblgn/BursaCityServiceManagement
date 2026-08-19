@@ -1,3 +1,4 @@
+using BCSMS.Application.Auth;
 using BCSMS.Application.ServiceRequests;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +12,7 @@ public static class DependencyInjection
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddScoped<IServiceRequestService, ServiceRequestService>();
+        services.AddScoped<IAuthService, AuthService>();
 
         return services;
     }
