@@ -20,12 +20,12 @@ export const MainLayout: React.FC = () => {
         sx={{
           flexGrow: 1,
           p: { xs: 2, sm: 3, md: 4 },
-          width: { md: `calc(100% - 240px)` },
+          width: { xs: '100%', md: `calc(100% - 240px)` },
           minHeight: '100vh',
           backgroundColor: 'background.default',
         }}
       >
-        <Toolbar sx={{ display: { xs: 'none', md: 'block' } }} />
+        <Toolbar />
         <Container maxWidth="xl" sx={{ px: { xs: 0, sm: 1, md: 2 } }}>
           <Outlet />
         </Container>

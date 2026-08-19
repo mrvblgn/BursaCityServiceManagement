@@ -35,13 +35,13 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onToggleSidebar }) => {
 
   return (
     <AppBar
-      position="sticky"
+      position="fixed"
       elevation={0}
       sx={{
         backgroundColor: '#FFFFFF',
         color: '#1E293B',
         borderBottom: '1px solid #E2E8F0',
-        zIndex: theme.zIndex.drawer + 1,
+        zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
     >
       <Toolbar sx={{ justifyContent: 'space-between', minHeight: 64 }}>
