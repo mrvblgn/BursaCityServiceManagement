@@ -24,7 +24,7 @@ export const citizenApi = {
     params.append('pageSize', pageSize.toString());
 
     const response = await apiClient.get<PagedResult<ServiceRequestSummaryDto>>(
-      `/api/service-requests?${params.toString()}`
+      `/api/service-requests/my?${params.toString()}`
     );
     return response.data;
   },
