@@ -1,0 +1,59 @@
+graph TD
+    subgraph Client ["Client Layer"]
+        Browser["Web Browser (SPA Client)"]
+    end
+
+    subgraph ContainerRuntime ["Docker Compose Environment"]
+        subgraph WebContainer ["Web Service (Nginx :80)"]
+            StaticAssets["React 18 + TS Static Bundle (Vite Build)"]
+            NginxProxy["Nginx Reverse Proxy (/api/ & /health)"]
+        end
+
+        subgraph ApiContainer ["API Service (.NET 8 Runtime :8080)"]
+            subgraph PresentationLayer ["BCSMS.API (Presentation / Composition Root)"]
+                Controllers["Controllers (Auth, Citizen, Manager, Employee, Reference)"]
+                Middleware["ExceptionHandling & ProblemDetails Middleware"]
+                HealthEndpoint["Health Check (/health)"]
+            end
+
+            subgraph ApplicationLayer ["BCSMS.Application (Use Cases & Contracts)"]
+                Commands["Commands & Handlers (Create, Assign, Resolve, Close...)"]
+                Queries["Queries & DTOs (GetById, GetMyRequests, GetMunicipal...)"]
+                Interfaces["Interfaces (Persistence, Security, Time)"]
+            end
+
+            subgraph DomainLayer ["BCSMS.Domain (Enterprise Core)"]
+                Entities["Entities (ServiceRequest, User, Department, Category...)"]
+                ValueObjects["Value Objects (ContactInfo, FullName, Location)"]
+                Enums["Enums (RequestStatus, Priority, UserRole)"]
+                DomainRules["Domain Invariants & State Rules"]
+            end
+
+            subgraph InfrastructureLayer ["BCSMS.Infrastructure (External Concerns)"]
+                DbContext["BcsmsDbContext (EF Core 8)"]
+                Repositories["Repositories (ServiceRequest, User, Dept, Cat)"]
+                SecurityServices["PasswordHasher (PBKDF2) & JwtTokenGenerator"]
+                Seeder["DbSeeder (Deterministic Demo Seed Data)"]
+            end
+        end
+
+        subgraph DbContainer ["Database Service (SQL Server 2022 :1433)"]
+            SqlServer[("SQL Server (BcsmsDb)")]
+            SqlVolume[("Named Volume: bcsms_sql_data")]
+        end
+    end
+
+    Browser -->|"HTTP :3000 (Direct / SPA Routes)"| StaticAssets
+    Browser -->|"HTTP :3000/api/* (Relative AJAX)"| NginxProxy
+    NginxProxy -->|"Reverse Proxy :8080"| Controllers
+    Controllers --> Commands
+    Controllers --> Queries
+    Commands --> Interfaces
+    Queries --> Interfaces
+    Commands --> Entities
+    Queries --> Entities
+    InfrastructureLayer -.->|"Implements"| Interfaces
+    DbContext --> Repositories
+    Repositories -->|"EF Core Migrations & Queries"| SqlServer
+    SqlServer --- SqlVolume
+    Controllers --> DomainRules

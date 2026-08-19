@@ -1,0 +1,96 @@
+erDiagram
+    Departments ||--o{ Users : "employs"
+    Departments ||--o{ ServiceRequests : "assigned_to_department"
+    Categories ||--o{ ServiceRequests : "categorizes"
+    Users ||--o{ ServiceRequests : "creates (Citizen)"
+    Users ||--o{ ServiceRequests : "assigned_to (Employee)"
+    Users ||--o{ StatusHistoryEntries : "changed_by"
+    Users ||--o{ Comments : "authored_by"
+    Users ||--o{ Attachments : "uploaded_by"
+
+    ServiceRequests ||--o{ StatusHistoryEntries : "tracks_history"
+    ServiceRequests ||--o{ Comments : "contains"
+    ServiceRequests ||--o{ Attachments : "includes"
+
+    Departments {
+        uniqueidentifier Id PK
+        nvarchar_200 Name
+        nvarchar_1000 Description
+        bit IsActive
+        datetime2 CreatedAt
+        datetime2 UpdatedAt
+    }
+
+    Categories {
+        uniqueidentifier Id PK
+        nvarchar_200 Name
+        nvarchar_1000 Description
+        bit IsActive
+        datetime2 CreatedAt
+        datetime2 UpdatedAt
+    }
+
+    Users {
+        uniqueidentifier Id PK
+        nvarchar_100 FirstName
+        nvarchar_100 LastName
+        nvarchar_256 Email UK
+        nvarchar_30 PhoneNumber
+        nvarchar_500 PasswordHash
+        nvarchar_30 Role
+        uniqueidentifier DepartmentId FK
+        bit IsActive
+        datetime2 CreatedAt
+        datetime2 UpdatedAt
+    }
+
+    ServiceRequests {
+        uniqueidentifier Id PK
+        nvarchar_50 TrackingCode UK
+        uniqueidentifier CitizenId FK
+        uniqueidentifier CategoryId FK
+        nvarchar_200 Title
+        nvarchar_max Description
+        nvarchar_30 Status
+        nvarchar_30 Priority
+        uniqueidentifier AssignedDepartmentId FK
+        uniqueidentifier AssignedEmployeeId FK
+        nvarchar_max ResolutionNote
+        nvarchar_max ClosureNote
+        nvarchar_max RejectionReason
+        nvarchar_max CancellationReason
+        float Latitude
+        float Longitude
+        nvarchar_500 AddressText
+        datetime2 CreatedAt
+        datetime2 UpdatedAt
+    }
+
+    StatusHistoryEntries {
+        uniqueidentifier Id PK
+        uniqueidentifier ServiceRequestId FK
+        nvarchar_30 OldStatus
+        nvarchar_30 NewStatus
+        nvarchar_1000 Note
+        uniqueidentifier ChangedByUserId FK
+        datetime2 ChangedAt
+    }
+
+    Comments {
+        uniqueidentifier Id PK
+        uniqueidentifier ServiceRequestId FK
+        uniqueidentifier AuthorUserId FK
+        nvarchar_max Content
+        datetime2 CreatedAt
+    }
+
+    Attachments {
+        uniqueidentifier Id PK
+        uniqueidentifier ServiceRequestId FK
+        nvarchar_255 FileName
+        nvarchar_500 FilePath
+        nvarchar_100 ContentType
+        bigint FileSizeBytes
+        uniqueidentifier UploadedByUserId FK
+        datetime2 UploadedAt
+    }

@@ -1,0 +1,22 @@
+stateDiagram-v2
+    [*] --> New : Citizen Submits Request
+
+    New --> Reviewing : Manager Starts Review
+    New --> Rejected : Manager Rejects Request
+    New --> Cancelled : Citizen Cancels Request
+
+    Reviewing --> Assigned : Manager Assigns (Dept + Employee + Priority)
+    Reviewing --> Rejected : Manager Rejects Request
+    Reviewing --> Cancelled : Citizen Cancels Request
+
+    Assigned --> InProgress : Assigned Employee Starts Work
+    Assigned --> Cancelled : Citizen Cancels Request
+
+    InProgress --> Resolved : Employee Completes & Resolves (with Note)
+
+    Resolved --> Closed : Manager Approves & Closes (with Note)
+    Resolved --> InProgress : Manager Reopens (with Note)
+
+    Closed --> [*]
+    Rejected --> [*]
+    Cancelled --> [*]
