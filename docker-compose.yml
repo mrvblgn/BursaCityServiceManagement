@@ -1,11 +1,63 @@
-# Bursa City Service Management System
-# Docker Compose Configuration
-#
-# Services will be added in future phases:
-# - bcsms-api (ASP.NET Core)
-# - bcsms-db (PostgreSQL / SQL Server)
-# - bcsms-web (React frontend)
+# ==============================================================================
+# Bursa City Service Management System (BCSMS) - Docker Compose Configuration
+# ==============================================================================
 
-version: "3.8"
+services:
+  # Database Service (Microsoft SQL Server 2022)
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: bcsms-db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "${SA_PASSWORD:-BcsmsLocalDevPassword2026!}"
+      MSSQL_PID: "Developer"
+    ports:
+      # Optional host exposure for local inspection / SQL tools
+      - "1433:1433"
+    volumes:
+      - bcsms_sql_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -C -Q \"SELECT 1\" || /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -Q \"SELECT 1\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    restart: unless-stopped
 
-services: {}
+  # Backend Web API (.NET 8)
+  api:
+    build:
+      context: .
+      dockerfile: docker/dotnet/Dockerfile
+    container_name: bcsms-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT:-Development}"
+      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=BcsmsDb;User Id=sa;Password=${SA_PASSWORD:-BcsmsLocalDevPassword2026!};TrustServerCertificate=True;"
+      JwtSettings__Secret: "${JWT_SECRET:-BursaCityServiceManagementSystemSafeDevelopmentKey2026!}"
+      JwtSettings__Issuer: "BCSMS.API"
+      JwtSettings__Audience: "BCSMS.Web"
+      Database__ApplyMigrations: "${DATABASE_APPLY_MIGRATIONS:-true}"
+      Database__SeedDemoData: "${DATABASE_SEED_DEMO_DATA:-true}"
+    ports:
+      - "5123:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Frontend Web Application (React + Nginx)
+  web:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    container_name: bcsms-web
+    ports:
+      - "3000:80"
+    depends_on:
+      api:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  bcsms_sql_data:
+    name: bcsms_sql_data

@@ -1,0 +1,33 @@
+# Git
+.git
+.gitignore
+
+# IDE and OS
+.vs
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# .NET Build artifacts
+**/bin/
+**/obj/
+**/TestResults/
+*.db
+*.db-shm
+*.db-wal
+
+# Node / Web artifacts
+**/node_modules/
+**/dist/
+**/coverage/
+npm-debug.log*
+yarn-debug.log*
+.pnpm-debug.log*
+
+# Environment secrets
+.env
+.env.local
+.env.*.local

@@ -8,6 +8,7 @@ using BCSMS.Infrastructure.Persistence;
 using BCSMS.Infrastructure.Persistence.Seeding;
 using BCSMS.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -21,6 +22,7 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHealthChecks();
 
 // CORS for local development frontend
 builder.Services.AddCors(options =>
@@ -113,22 +115,39 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
 
-    // Idempotent development schema & seed data
+// Controlled database migration & seed initialization
+var applyMigrations = app.Configuration.GetValue<bool>("Database:ApplyMigrations", false);
+var seedDemoData = app.Configuration.GetValue<bool>("Database:SeedDemoData", false);
+
+if (applyMigrations || seedDemoData)
+{
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<BcsmsDbContext>();
-    db.Database.EnsureCreated();
 
-    var seeder = scope.ServiceProvider.GetService<IDbSeeder>();
-    if (seeder != null)
+    if (applyMigrations)
     {
-        try
+        app.Logger.LogInformation("Applying EF Core database migrations...");
+        await db.Database.MigrateAsync();
+        app.Logger.LogInformation("Database migrations applied successfully.");
+    }
+
+    if (seedDemoData)
+    {
+        var seeder = scope.ServiceProvider.GetService<IDbSeeder>();
+        if (seeder != null)
         {
-            await seeder.SeedDevelopmentDataAsync();
-        }
-        catch (Exception ex)
-        {
-            app.Logger.LogWarning(ex, "Development seeding skipped or encountered an issue.");
+            try
+            {
+                app.Logger.LogInformation("Seeding development demo data...");
+                await seeder.SeedDevelopmentDataAsync();
+                app.Logger.LogInformation("Development demo data seeded successfully.");
+            }
+            catch (Exception ex)
+            {
+                app.Logger.LogWarning(ex, "Development seeding encountered an issue.");
+            }
         }
     }
 }
@@ -138,6 +157,7 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapHealthChecks("/health");
 app.MapControllers();
 
 app.Run();
