@@ -1,3 +1,4 @@
+using BCSMS.Application.ServiceRequests;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BCSMS.Application;
@@ -9,7 +10,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        // Application services (MediatR, validators, etc.) will be registered here in future phases.
+        services.AddScoped<IServiceRequestService, ServiceRequestService>();
+
         return services;
     }
 }
