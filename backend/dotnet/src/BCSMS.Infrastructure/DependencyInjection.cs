@@ -1,3 +1,6 @@
+using BCSMS.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BCSMS.Infrastructure;
@@ -7,10 +10,16 @@ namespace BCSMS.Infrastructure;
 /// </summary>
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        // Infrastructure services (DbContext, repositories, external clients, etc.)
-        // will be registered here in future phases.
+        var connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' was not found.");
+
+        services.AddDbContext<BcsmsDbContext>(options =>
+            options.UseSqlServer(connectionString));
+
         return services;
     }
 }
