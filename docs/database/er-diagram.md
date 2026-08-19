@@ -1,6 +1,6 @@
 # Database Schema & Entity-Relationship (ER) Model
 
-This document outlines the database schema and table relationships for the **Bursa City Service Management System (BCSMS)** backed by Microsoft SQL Server and managed via Entity Framework Core migrations.
+This document outlines the database schema and table relationships for the **Bursa City Service Management System (BCSMS)** backed by PostgreSQL 16 (and Neon PostgreSQL) and managed via Entity Framework Core migrations.
 
 ---
 

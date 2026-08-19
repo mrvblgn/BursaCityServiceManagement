@@ -3,25 +3,25 @@
 # ==============================================================================
 
 services:
-  # Database Service (Microsoft SQL Server 2022)
+  # Database Service (PostgreSQL 16 Alpine)
   db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: postgres:16-alpine
     container_name: bcsms-db
     environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "${SA_PASSWORD:-BcsmsLocalDevPassword2026!}"
-      MSSQL_PID: "Developer"
+      POSTGRES_DB: "${POSTGRES_DB:-bcsms}"
+      POSTGRES_USER: "${POSTGRES_USER:-postgres}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-BcsmsLocalDevPassword2026!}"
     ports:
-      # Optional host exposure for local inspection / SQL tools
-      - "1433:1433"
+      # Optional host exposure for local inspection / PostgreSQL tools (avoids host 5432 collisions)
+      - "5433:5432"
     volumes:
-      - bcsms_sql_data:/var/opt/mssql
+      - bcsms_postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -C -Q \"SELECT 1\" || /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -Q \"SELECT 1\""]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 15s
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-bcsms}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
     restart: unless-stopped
 
   # Backend Web API (.NET 8)
@@ -32,7 +32,7 @@ services:
     container_name: bcsms-api
     environment:
       ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT:-Development}"
-      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=BcsmsDb;User Id=sa;Password=${SA_PASSWORD:-BcsmsLocalDevPassword2026!};TrustServerCertificate=True;"
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${POSTGRES_DB:-bcsms};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-BcsmsLocalDevPassword2026!};"
       JwtSettings__Secret: "${JWT_SECRET:-BursaCityServiceManagementSystemSafeDevelopmentKey2026!}"
       JwtSettings__Issuer: "BCSMS.API"
       JwtSettings__Audience: "BCSMS.Web"
@@ -59,5 +59,5 @@ services:
     restart: unless-stopped
 
 volumes:
-  bcsms_sql_data:
-    name: bcsms_sql_data
+  bcsms_postgres_data:
+    name: bcsms_postgres_data

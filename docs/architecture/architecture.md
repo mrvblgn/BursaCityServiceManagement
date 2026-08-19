@@ -46,9 +46,9 @@ graph TD
             end
         end
 
-        subgraph DbContainer ["Database Service (SQL Server 2022 :1433)"]
-            SqlServer[("SQL Server (BcsmsDb)")]
-            SqlVolume[("Named Volume: bcsms_sql_data")]
+        subgraph DbContainer ["Database Service (PostgreSQL 16 Alpine :5432)"]
+            PostgresDb[("PostgreSQL (bcsms)")]
+            DbVolume[("Named Volume: bcsms_postgres_data")]
         end
     end
 
@@ -63,8 +63,8 @@ graph TD
     Queries --> Entities
     InfrastructureLayer -.->|"Implements"| Interfaces
     DbContext --> Repositories
-    Repositories -->|"EF Core Migrations & Queries"| SqlServer
-    SqlServer --- SqlVolume
+    Repositories -->|"EF Core Migrations & Queries"| PostgresDb
+    PostgresDb --- DbVolume
 ```
 
 ---
@@ -109,4 +109,4 @@ BCSMS.API ───────► BCSMS.Application ◄─────── BC
                       BCSMS.Domain
 ```
 
-All dependencies point inwards toward the Domain model. Neither `BCSMS.Domain` nor `BCSMS.Application` depends on EF Core, ASP.NET Core, or SQL Server.
+All dependencies point inwards toward the Domain model. Neither `BCSMS.Domain` nor `BCSMS.Application` depends on EF Core, ASP.NET Core, or database engines (PostgreSQL/SQL Server).

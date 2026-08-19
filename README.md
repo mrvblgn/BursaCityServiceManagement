@@ -3,7 +3,7 @@
 [![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
 [![React 18](https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![SQL Server](https://img.shields.io/badge/SQL_Server-2022-CC292B?logo=microsoft-sql-server&logoColor=white)](https://www.microsoft.com/sql-server)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Docker](https://img.shields.io/badge/Docker_Compose-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 
 A municipal citizen service and request management platform developed as a case study for **Bursa Metropolitan Municipality**.
@@ -58,7 +58,7 @@ BCSMS.API ───────► BCSMS.Application ◄─────── BC
 
 - **`BCSMS.Domain`**: Core enterprise entities, value objects, domain exceptions, and invariant rules (zero external framework dependencies).
 - **`BCSMS.Application`**: Use cases, command/query handlers, validation logic, repository contracts, and DTOs.
-- **`BCSMS.Infrastructure`**: EF Core 8 database context (`BcsmsDbContext`), migrations, SQL Server repository implementations, PBKDF2 password hashing, and JWT token generation.
+- **`BCSMS.Infrastructure`**: EF Core 8 database context (`BcsmsDbContext`), migrations, PostgreSQL repository implementations, PBKDF2 password hashing, and JWT token generation.
 - **`BCSMS.API`**: ASP.NET Core Web API presentation layer, middleware, Swagger documentation, and health check endpoints.
 - **`frontend/web`**: Single Page Application built with React 18, TypeScript, Material UI (MUI v5), and TanStack Query v5.
 
@@ -70,7 +70,7 @@ Detailed architecture diagrams and specifications are available in [docs/archite
 
 | Layer | Technologies |
 |---|---|
-| **Backend** | .NET 8, ASP.NET Core Web API, EF Core 8, SQL Server 2022, xUnit, FluentAssertions, Moq |
+| **Backend** | .NET 8, ASP.NET Core Web API, EF Core 8, PostgreSQL 16 (Npgsql), xUnit, FluentAssertions, Moq |
 | **Frontend** | React 18, TypeScript 5.5, Vite 5, Material UI (MUI v5), React Router v6, Axios, TanStack Query v5, Vitest, React Testing Library |
 | **Infrastructure** | Docker, Docker Compose, Nginx 1.27 Alpine |
 
@@ -140,7 +140,7 @@ The project maintains 100% test pass rates across both backend and frontend suit
   - `BCSMS.IntegrationTests` (28 tests): ASP.NET Core `WebApplicationFactory` tests using persistent SQLite in-memory integration databases covering all endpoint controllers, role authorization, and the full end-to-end municipal lifecycle.
 - **Frontend Test Suite (28 Tests)**:
   - Vitest + React Testing Library covering layout rendering, role guards, status/priority chips, error translation, and form validation.
-- **Smoke Tests**: Validated live end-to-end workflow execution across containerized Nginx, Web API, and SQL Server services.
+- **Smoke Tests**: Validated live end-to-end workflow execution across containerized Nginx, Web API, and PostgreSQL services.
 
 ```bash
 # Run Backend Tests
@@ -175,11 +175,11 @@ cd frontend/web && npm test -- --run
    - **Health Endpoint**: [http://localhost:3000/health](http://localhost:3000/health) or [http://localhost:5123/health](http://localhost:5123/health)
 
 ### Managing Data Persistence
-- **Stop services (preserving SQL database data)**:
+- **Stop services (preserving PostgreSQL database data)**:
   ```bash
   docker compose down
   ```
-- **Stop services and remove SQL database volume**:
+- **Stop services and remove PostgreSQL database volume**:
   ```bash
   docker compose down -v
   ```
@@ -212,7 +212,7 @@ BursaCityServiceManagement/
 │       ├── src/
 │       │   ├── BCSMS.Domain/            # Domain entities, enums, value objects
 │       │   ├── BCSMS.Application/       # Use cases, commands, queries, DTOs
-│       │   ├── BCSMS.Infrastructure/    # EF Core, SQL Server, security services
+│       │   ├── BCSMS.Infrastructure/    # EF Core, PostgreSQL, security services
 │       │   └── BCSMS.API/               # Controllers, middleware, program entry
 │       └── tests/
 │           ├── BCSMS.UnitTests/         # Domain and application unit tests

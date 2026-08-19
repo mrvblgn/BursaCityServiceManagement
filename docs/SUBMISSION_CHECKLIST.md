@@ -29,8 +29,8 @@ This checklist documents the repository completeness, automated verification res
 
 ### Infrastructure & Containerization
 - [x] Docker Compose specification validated (`docker compose config`)
-- [x] SQL Server 2022 service configured with container healthcheck
-- [x] Named volume (`bcsms_sql_data`) configured for database persistence
+- [x] PostgreSQL 16 Alpine service configured with container healthcheck (`pg_isready`)
+- [x] Named volume (`bcsms_postgres_data`) configured for database persistence
 - [x] Nginx reverse proxy configured for SPA routing (`try_files`) and `/api/` proxying
 - [x] Built-in `/health` check operational and responding `Healthy`
 
@@ -57,7 +57,7 @@ cp .env.example .env
 ```bash
 docker compose up --build -d
 ```
-*Wait ~20 seconds for SQL Server healthcheck to complete and database migrations/seeds to apply.*
+*Wait ~5 seconds for PostgreSQL healthcheck to complete and database migrations/seeds to apply.*
 
 ### Step 3: Access Application
 Open your browser at:

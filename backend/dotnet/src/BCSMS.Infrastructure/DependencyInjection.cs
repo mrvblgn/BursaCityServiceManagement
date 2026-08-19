@@ -24,17 +24,8 @@ public static class DependencyInjection
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' was not found.");
 
-        if (connectionString.Contains(".db", StringComparison.OrdinalIgnoreCase) ||
-            connectionString.StartsWith("Data Source=", StringComparison.OrdinalIgnoreCase) && !connectionString.Contains("Server=", StringComparison.OrdinalIgnoreCase))
-        {
-            services.AddDbContext<BcsmsDbContext>(options =>
-                options.UseSqlite(connectionString));
-        }
-        else
-        {
-            services.AddDbContext<BcsmsDbContext>(options =>
-                options.UseSqlServer(connectionString));
-        }
+        services.AddDbContext<BcsmsDbContext>(options =>
+            options.UseNpgsql(connectionString));
 
         // Options
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
