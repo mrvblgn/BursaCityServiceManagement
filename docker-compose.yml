@@ -1,0 +1,11 @@
+# Bursa City Service Management System
+# Docker Compose Configuration
+#
+# Services will be added in future phases:
+# - bcsms-api (ASP.NET Core)
+# - bcsms-db (PostgreSQL / SQL Server)
+# - bcsms-web (React frontend)
+
+version: "3.8"
+
+services: {}
