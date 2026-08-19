@@ -4,6 +4,8 @@ using System.Text.Json.Serialization;
 using BCSMS.API.Middleware;
 using BCSMS.Application;
 using BCSMS.Infrastructure;
+using BCSMS.Infrastructure.Persistence;
+using BCSMS.Infrastructure.Persistence.Seeding;
 using BCSMS.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -19,6 +21,17 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddEndpointsApiExplorer();
+
+// CORS for local development frontend
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 // Swagger with standard OpenAPI HTTP Bearer JWT support
 builder.Services.AddSwaggerGen(c =>
@@ -100,9 +113,27 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    // Idempotent development schema & seed data
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<BcsmsDbContext>();
+    db.Database.EnsureCreated();
+
+    var seeder = scope.ServiceProvider.GetService<IDbSeeder>();
+    if (seeder != null)
+    {
+        try
+        {
+            await seeder.SeedDevelopmentDataAsync();
+        }
+        catch (Exception ex)
+        {
+            app.Logger.LogWarning(ex, "Development seeding skipped or encountered an issue.");
+        }
+    }
 }
 
-app.UseHttpsRedirection();
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();

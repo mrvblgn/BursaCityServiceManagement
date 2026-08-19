@@ -1,5 +1,7 @@
 using BCSMS.Application.Abstractions.Persistence;
+using BCSMS.Application.Reference;
 using BCSMS.Domain.Entities;
+using BCSMS.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace BCSMS.Infrastructure.Persistence.Repositories;
@@ -41,5 +43,21 @@ public class UserRepository : IUserRepository
     {
         await _dbContext.Users.AddAsync(user, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<EmployeeLookupDto>> GetActiveEmployeesByDepartmentLookupAsync(
+        Guid departmentId,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Users
+            .AsNoTracking()
+            .Where(u => u.IsActive && u.Role == UserRole.Employee && u.DepartmentId == departmentId)
+            .OrderBy(u => u.Name.FirstName)
+            .ThenBy(u => u.Name.LastName)
+            .Select(u => new EmployeeLookupDto(
+                u.Id,
+                u.Name.FirstName + " " + u.Name.LastName,
+                u.Contact.Email))
+            .ToListAsync(cancellationToken);
     }
 }

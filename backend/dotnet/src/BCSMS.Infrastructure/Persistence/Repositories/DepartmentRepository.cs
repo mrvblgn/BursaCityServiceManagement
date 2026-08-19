@@ -1,4 +1,5 @@
 using BCSMS.Application.Abstractions.Persistence;
+using BCSMS.Application.Reference;
 using BCSMS.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,5 +19,15 @@ public class DepartmentRepository : IDepartmentRepository
         return await _dbContext.Departments
             .AsNoTracking()
             .FirstOrDefaultAsync(d => d.Id == id, cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<DepartmentLookupDto>> GetActiveLookupAsync(CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Departments
+            .AsNoTracking()
+            .Where(d => d.IsActive)
+            .OrderBy(d => d.Name)
+            .Select(d => new DepartmentLookupDto(d.Id, d.Name))
+            .ToListAsync(cancellationToken);
     }
 }

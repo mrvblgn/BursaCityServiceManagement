@@ -1,3 +1,4 @@
+using BCSMS.Application.Reference;
 using BCSMS.Domain.Entities;
 
 namespace BCSMS.Application.Abstractions.Persistence;
@@ -8,4 +9,5 @@ namespace BCSMS.Application.Abstractions.Persistence;
 public interface ICategoryRepository
 {
     Task<Category?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<CategoryLookupDto>> GetActiveLookupAsync(CancellationToken cancellationToken = default);
 }

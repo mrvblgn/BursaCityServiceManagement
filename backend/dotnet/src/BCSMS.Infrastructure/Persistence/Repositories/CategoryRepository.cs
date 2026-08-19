@@ -1,4 +1,5 @@
 using BCSMS.Application.Abstractions.Persistence;
+using BCSMS.Application.Reference;
 using BCSMS.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,5 +19,15 @@ public class CategoryRepository : ICategoryRepository
         return await _dbContext.Categories
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<CategoryLookupDto>> GetActiveLookupAsync(CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Categories
+            .AsNoTracking()
+            .Where(c => c.IsActive)
+            .OrderBy(c => c.Name)
+            .Select(c => new CategoryLookupDto(c.Id, c.Name, c.Description))
+            .ToListAsync(cancellationToken);
     }
 }

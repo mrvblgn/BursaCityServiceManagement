@@ -1,3 +1,4 @@
+using BCSMS.Application.Reference;
 using BCSMS.Domain.Entities;
 
 namespace BCSMS.Application.Abstractions.Persistence;
@@ -11,4 +12,5 @@ public interface IUserRepository
     Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
     Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default);
     Task AddAsync(User user, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<EmployeeLookupDto>> GetActiveEmployeesByDepartmentLookupAsync(Guid departmentId, CancellationToken cancellationToken = default);
 }
