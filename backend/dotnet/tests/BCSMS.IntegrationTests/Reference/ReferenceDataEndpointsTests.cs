@@ -52,7 +52,7 @@ public class ReferenceDataEndpointsTests : IClassFixture<CustomWebApplicationFac
         var categories = await response.Content.ReadFromJsonAsync<List<CategoryLookupDto>>(_jsonOptions);
         Assert.NotNull(categories);
         Assert.True(categories.Count >= 4);
-        Assert.Contains(categories, c => c.Name == "Road and Pavement");
+        Assert.Contains(categories, c => c.Name == "Yol ve Kaldırım");
     }
 
     [Fact]

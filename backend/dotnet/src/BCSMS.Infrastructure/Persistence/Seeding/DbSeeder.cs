@@ -49,9 +49,14 @@ public class DbSeeder : IDbSeeder
 
         foreach (var dept in departments)
         {
-            if (!await _dbContext.Departments.AnyAsync(d => d.Id == dept.Id || d.Name == dept.Name, cancellationToken))
+            var existing = await _dbContext.Departments.FirstOrDefaultAsync(d => d.Id == dept.Id, cancellationToken);
+            if (existing == null)
             {
                 await _dbContext.Departments.AddAsync(dept, cancellationToken);
+            }
+            else
+            {
+                existing.Update(dept.Name, dept.Description, now);
             }
         }
 
@@ -63,17 +68,22 @@ public class DbSeeder : IDbSeeder
 
         var categories = new List<Category>
         {
-            new(roadCategoryId, "Road and Pavement", "Potholes, sidewalk and asphalt damage", now),
-            new(lightingCategoryId, "Street Lighting and Electrical", "Faulty street lights and traffic signals", now),
-            new(wasteCategoryId, "Waste and Cleaning", "Garbage collection and litter cleanup", now),
-            new(parksCategoryId, "Parks and Green Areas", "Damaged benches, playground equipment, and grass maintenance", now)
+            new(roadCategoryId, "Yol ve Kaldırım", "Çukur, kaldırım ve asfalt hasarları", now),
+            new(lightingCategoryId, "Sokak Aydınlatması ve Elektrik", "Arızalı sokak lambaları ve trafik sinyalizasyonu", now),
+            new(wasteCategoryId, "Atık ve Temizlik", "Çöp toplama ve çevre temizliği talepleri", now),
+            new(parksCategoryId, "Park ve Yeşil Alanlar", "Hasarlı banklar, oyun grubu ekipmanları ve çim bakımı", now)
         };
 
         foreach (var cat in categories)
         {
-            if (!await _dbContext.Categories.AnyAsync(c => c.Id == cat.Id || c.Name == cat.Name, cancellationToken))
+            var existing = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == cat.Id, cancellationToken);
+            if (existing == null)
             {
                 await _dbContext.Categories.AddAsync(cat, cancellationToken);
+            }
+            else
+            {
+                existing.Update(cat.Name, cat.Description, now);
             }
         }
 
