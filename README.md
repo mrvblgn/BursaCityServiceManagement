@@ -6,7 +6,6 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Docker](https://img.shields.io/badge/Docker_Compose-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 
-**Bursa Büyükşehir Belediyesi** için bir vaka çalışması (case study) olarak geliştirilmiş belediye vatandaş hizmet ve talep yönetim platformudur.
 
 Sistem, vatandaşların hizmet taleplerini ilk başvuru anından itibaren belediye incelemesi, birim ataması, saha uygulaması, çözüm ve resmi kapatma süreçlerine kadar uçtan uca yönetir.
 
