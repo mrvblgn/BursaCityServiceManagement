@@ -1,4 +1,4 @@
-# Bursa City Service Management System (BCSMS)
+# Bursa Şehir Hizmetleri Yönetim Sistemi (BCSMS)
 
 [![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
 [![React 18](https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=black)](https://react.dev/)
@@ -6,48 +6,48 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Docker](https://img.shields.io/badge/Docker_Compose-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 
-A municipal citizen service and request management platform developed as a case study for **Bursa Metropolitan Municipality**.
+**Bursa Büyükşehir Belediyesi** için bir vaka çalışması (case study) olarak geliştirilmiş belediye vatandaş hizmet ve talep yönetim platformudur.
 
-The system streamlines citizen service requests from initial submission through municipal review, department assignment, field execution, resolution, and administrative closure.
+Sistem, vatandaşların hizmet taleplerini ilk başvuru anından itibaren belediye incelemesi, birim ataması, saha uygulaması, çözüm ve resmi kapatma süreçlerine kadar uçtan uca yönetir.
 
 ---
 
-## Complete Business Workflow
+## İş Akışı Özeti
 
 ```
-[Citizen] Submits Request ──► [Manager] Reviews ──► [Manager] Assigns Department & Employee
+[Vatandaş] Talep Oluşturur ──► [Yönetici] İncelemeye Alır ──► [Yönetici] Birim & Personel Atar
                                                                        │
-[Citizen] Receives Update ◄── [Manager] Closes ◄── [Employee] Resolves ◄── [Employee] Starts Work
+[Vatandaş] Bildirim Alır ◄── [Yönetici] Talebi Kapatır ◄── [Personel] Talebi Çözer ◄── [Personel] İşe Başlar
 ```
 
 ---
 
-## Key Features
+## Temel Özellikler
 
-### Citizen Portal
-- **Registration & Authentication**: Citizen self-registration with secure password validation.
-- **Submit Service Requests**: Create requests selecting from active municipal categories (`Road and Pavement`, `Street Lighting`, `Waste and Cleaning`, `Parks`) with address and geographic coordinates.
-- **My Requests & Tracking**: Filter personal requests by status and inspect detailed chronological process timelines.
+### Vatandaş Portalı
+- **Kayıt ve Kimlik Doğrulama**: Güvenli şifre kurallarıyla vatandaş öz kayıt (self-registration) mekanizması.
+- **Hizmet Talebi Oluşturma**: Aktif belediye kategorilerinden (`Yol ve Kaldırım`, `Sokak Aydınlatması ve Elektrik`, `Atık ve Temizlik`, `Park ve Yeşil Alanlar`) seçim yaparak açık adres ve coğrafi koordinat (enlem/boylam) ile talep oluşturma.
+- **Taleplerim ve Takip**: Kişisel talepleri duruma göre filtreleme ve kronolojik süreç geçmişini detaylı inceleme.
 
-### Manager Portal
-- **Municipal Oversight**: Comprehensive dashboard with status metrics and a multi-filtered request table (Status, Category, Department, Priority).
-- **Workflow Operations**: Start review (`New` $\rightarrow$ `Reviewing`), assign tasks to specific municipal departments and field staff with priority ratings (`Reviewing` $\rightarrow$ `Assigned`), reject non-qualifying requests (`Rejected`), reopen unresolved requests (`InProgress`), and officially close completed requests (`Closed`).
+### Yönetici Portalı
+- **Belediye Talepleri Genel Görünümü**: Durum metriklerini içeren kapsamlı dashboard ve çoklu filtreleme (Durum, Kategori, Birim, Öncelik) destekli talep tablosu.
+- **Süreç Yönetimi**: İnceleme başlatma (`New` $\rightarrow$ `Reviewing`), talepleri ilgili belediye birimlerine ve saha personeline öncelik puanıyla atama (`Reviewing` $\rightarrow$ `Assigned`), uygun olmayan talepleri reddetme (`Rejected`), çözülemeyen talepleri yeniden açma (`InProgress`), ve tamamlanan talepleri resmi olarak kapatma (`Closed`).
 
-### Field Employee Portal
-- **Task Management**: Dedicated view for requests assigned specifically to the authenticated employee.
-- **Work Execution**: Transition assigned tasks to active progress (`Assigned` $\rightarrow$ `InProgress`) and submit resolution notes upon completion (`InProgress` $\rightarrow$ `Resolved`).
+### Saha Personeli Portalı
+- **Görev Yönetimi**: Giriş yapmış personele özel atanan talepleri listeleyen dinamik ekran.
+- **Saha İş Yürütme**: Atanan görevleri aktif çalışmaya alma (`Assigned` $\rightarrow$ `InProgress`) ve iş tamamlandığında çözüm notuyla birlikte çözüldü olarak işaretleme (`InProgress` $\rightarrow$ `Resolved`).
 
-### Platform & Architecture
-- **JWT Bearer Authentication**: Role-based access control (`Citizen`, `Manager`, `Employee`, `Admin`).
-- **Audit & Timeline**: Immutable status transition history capturing actor IDs, timestamps, and notes.
-- **Production-Grade Packaging**: Multi-stage Dockerfiles and Docker Compose orchestration with Nginx reverse proxy.
-- **Standardized Error Handling**: RFC 7807 `ProblemDetails` translation across all API controllers.
+### Platform ve Mimari
+- **JWT Bearer Kimlik Doğrulama**: Rol tabanlı erişim kontrolü (`Citizen`, `Manager`, `Employee`, `Admin`).
+- **Denetim İzleri ve Zaman Çizelgesi**: İşlemi yapan kullanıcı ID'si, zaman damgası ve notları içeren değiştirilemez (immutable) durum geçiş geçmişi.
+- **Prodüksiyon Seviyesinde Konteynerizasyon**: Nginx reverse proxy ile multi-stage Dockerfile ve Docker Compose orkestrasyonu.
+- **Standart Hata Yönetimi**: Tüm API denetleyicilerinde RFC 7807 `ProblemDetails` standart hata yanıtları.
 
 ---
 
-## Architecture
+## Sistem Mimarisi
 
-BCSMS is designed in strict compliance with **Clean Architecture** (Ports & Adapters) principles:
+BCSMS, **Clean Architecture** (Ports & Adapters) ilkelerine tam uyumlu olarak tasarlanmıştır:
 
 ```
 BCSMS.API ───────► BCSMS.Application ◄─────── BCSMS.Infrastructure
@@ -56,42 +56,42 @@ BCSMS.API ───────► BCSMS.Application ◄─────── BC
                       BCSMS.Domain
 ```
 
-- **`BCSMS.Domain`**: Core enterprise entities, value objects, domain exceptions, and invariant rules (zero external framework dependencies).
-- **`BCSMS.Application`**: Use cases, command/query handlers, validation logic, repository contracts, and DTOs.
-- **`BCSMS.Infrastructure`**: EF Core 8 database context (`BcsmsDbContext`), migrations, PostgreSQL repository implementations, PBKDF2 password hashing, and JWT token generation.
-- **`BCSMS.API`**: ASP.NET Core Web API presentation layer, middleware, Swagger documentation, and health check endpoints.
-- **`frontend/web`**: Single Page Application built with React 18, TypeScript, Material UI (MUI v5), and TanStack Query v5.
+- **`BCSMS.Domain`**: Temel kurumsal varlıklar (entities), değer nesneleri (value objects), domain istisnaları ve iş kuralları (dış framework bağımlılığı içermez).
+- **`BCSMS.Application`**: Kullanım senaryoları (use cases), komut/sorgu işleyicileri (CQRS tarzı handlers), doğrulama mantığı, repository arayüzleri ve DTO'lar.
+- **`BCSMS.Infrastructure`**: EF Core 8 veritabanı bağlamı (`BcsmsDbContext`), migrasyonlar, PostgreSQL repository uyarlamaları, PBKDF2 şifre özetleme (hashing) ve JWT token üretimi.
+- **`BCSMS.API`**: ASP.NET Core Web API katmanı, ara yazılımlar (middleware), Swagger dokümantasyonu ve health check endpoint'leri.
+- **`frontend/web`**: React 18, TypeScript, Material UI (MUI v5) ve TanStack Query v5 ile geliştirilmiş Single Page Application (SPA).
 
-Detailed architecture diagrams and specifications are available in [docs/architecture/architecture.md](docs/architecture/architecture.md).
+Detaylı mimari şemalar ve teknik dokümantasyon [docs/architecture/architecture.md](docs/architecture/architecture.md) dosyasında mevcuttur.
 
 ---
 
-## Technology Stack
+## Kullanılan Teknolojiler
 
-| Layer | Technologies |
+| Katman | Teknolojiler |
 |---|---|
-| **Backend** | .NET 8, ASP.NET Core Web API, EF Core 8, PostgreSQL 16 (Npgsql), xUnit, FluentAssertions, Moq |
+| **Backend (Primary)** | .NET 8, ASP.NET Core Web API, EF Core 8, PostgreSQL 16 (Npgsql), xUnit, FluentAssertions, Moq |
 | **Frontend** | React 18, TypeScript 5.5, Vite 5, Material UI (MUI v5), React Router v6, Axios, TanStack Query v5, Vitest, React Testing Library |
-| **Infrastructure** | Docker, Docker Compose, Nginx 1.27 Alpine |
+| **Altyapı & Konteyner** | Docker, Docker Compose, Nginx 1.27 Alpine |
 
 ---
 
-## Domain Model & Database Schema
+## Domain Modeli ve Veritabanı Şeması
 
-The persistence schema reflects the municipal service domain:
+Veritabanı şeması belediye hizmet alanını yansıtmaktadır:
 
-- **`Users`**: Authenticated platform accounts with roles (`Citizen`, `Manager`, `Employee`, `Admin`) and department associations.
-- **`Departments`**: Operational municipal units (e.g., Fen İşleri, Park ve Bahçeler, Temizlik İşleri, Ulaşım).
-- **`Categories`**: Service classifications for citizen requests.
-- **`ServiceRequests`**: Core lifecycle entity with tracking code, citizen reference, category, assigned staff, coordinates, and notes.
-- **`StatusHistoryEntries`**: Immutable audit logs capturing every status transition, actor ID, and note.
-- **`Comments`** & **`Attachments`**: Discussion and metadata attachments linked to service requests.
+- **`Users`**: Sistem rolleri (`Citizen`, `Manager`, `Employee`, `Admin`) ve birim ilişkisi bulunan kullanıcı hesapları.
+- **`Departments`**: Operasyonel belediye birimleri (Fen İşleri, Park ve Bahçeler, Temizlik İşleri, Ulaşım).
+- **`Categories`**: Vatandaş başvuruları için hizmet kategorileri (`Yol ve Kaldırım`, `Sokak Aydınlatması ve Elektrik`, `Atık ve Temizlik`, `Park ve Yeşil Alanlar`).
+- **`ServiceRequests`**: Takip kodu, vatandaş referansı, kategori, atanan personel, koordinat ve notları barındıran temel yaşam döngüsü varlığı.
+- **`StatusHistoryEntries`**: Her durum geçişini, aktör ID'sini ve işlem notunu kaydeden değiştirilemez denetim kaydı.
+- **`Comments`** & **`Attachments`**: Taleplere bağlı yorumlar ve dosya eki meta verileri.
 
-Entity-Relationship diagrams and detailed schema documentation are available in [docs/database/er-diagram.md](docs/database/er-diagram.md).
+Varlık İlişki Diyagramı (ERD) ve veritabanı detayları [docs/database/er-diagram.md](docs/database/er-diagram.md) dosyasında mevcuttur.
 
 ---
 
-## Request Lifecycle State Machine
+## Talep Yaşam Döngüsü (State Machine)
 
 ```mermaid
 stateDiagram-v2
@@ -118,147 +118,179 @@ stateDiagram-v2
     Cancelled --> [*]
 ```
 
-Full state transition rules and role permissions are documented in [docs/business/request-workflow.md](docs/business/request-workflow.md).
+Detaylı durum geçiş kuralları ve rol yetkileri [docs/business/request-workflow.md](docs/business/request-workflow.md) dokümanında yer almaktadır.
 
 ---
 
-## Security
+## Roller ve Yetkilendirme
 
-- **Password Hashing**: Industry-standard PBKDF2 with HMAC-SHA512 using 100,000 iterations and unique cryptographic salt per user.
-- **JWT Authorization**: Cryptographically signed HMAC-SHA256 bearer tokens with role claims.
-- **Actor Enforcement**: Authenticated user IDs are derived strictly from server-validated JWT claims (`User.GetUserId()`), preventing client spoofing of `CitizenId`, `ManagerId`, or `EmployeeId`.
-- **Environment Isolation**: All credentials in `.env.example` and repository configurations are clearly marked local development placeholders. Real `.env` files remain gitignored.
+- **Vatandaş (`Citizen`)**: Yeni hizmet talebi oluşturabilir, kendi taleplerini listeleyebilir, talep sürecini takip edebilir ve henüz işleme alınmamış talebini iptal edebilir.
+- **Yönetici (`Manager`)**: Tüm belediye taleplerini izleyebilir, inceleme başlatabilir, talebi birime/saha personeline atayabilir, öncelik belirleyebilir, uygun olmayan talepleri gerekçe ile reddedebilir veya tamamlanan talepleri kapatabilir/yeniden açabilir.
+- **Saha Personeli (`Employee`)**: Kendisine atanan görevleri görüntüleyebilir, işi başlatabilir (`InProgress`) ve çözüm notu ekleyerek tamamlayabilir (`Resolved`).
+- **Sistem Yöneticisi (`Admin`)**: Sistem geneli birim, kategori ve kullanıcı yönetimi yetkilerine sahiptir.
 
 ---
 
-## Testing
+## Güvenlik
 
-The project maintains 100% test pass rates across both backend and frontend suites:
+- **Şifre Özetleme (Password Hashing)**: Kullanıcı başına rastgele tuz (salt) ile 100.000 iterasyonlu standart PBKDF2 (HMAC-SHA512).
+- **JWT Yetkilendirme**: Rol taleplerini (role claims) içeren, kriptografik olarak imzalanmış HMAC-SHA256 bearer token'lar.
+- **Aktör Doğrulaması**: Kimliği doğrulanmış kullanıcı ID'leri istemci tarafı sahteciliğini önlemek amacıyla sunucu tarafında doğrulanmış JWT claim'lerinden (`User.GetUserId()`) türetilir.
+- **İzolasyon**: `.env.example` içerisindeki tüm bilgiler yerel geliştirme ortamı örnekleridir. Gerçek şifre ve anahtarları içeren `.env` dosyaları gitignore ile korunur.
 
-- **Backend Test Suite (76 Tests)**:
-  - `BCSMS.UnitTests` (48 tests): Domain entity invariants, use case handlers, validation rules.
-  - `BCSMS.IntegrationTests` (28 tests): ASP.NET Core `WebApplicationFactory` tests using persistent SQLite in-memory integration databases covering all endpoint controllers, role authorization, and the full end-to-end municipal lifecycle.
-- **Frontend Test Suite (28 Tests)**:
-  - Vitest + React Testing Library covering layout rendering, role guards, status/priority chips, error translation, and form validation.
-- **Smoke Tests**: Validated live end-to-end workflow execution across containerized Nginx, Web API, and PostgreSQL services.
+---
+
+## Testler
+
+Proje backend ve frontend bileşenlerinde yüksek test kapsamına sahiptir:
+
+- **.NET Backend Test Paketi (76 Test)**:
+  - `BCSMS.UnitTests` (48 test): Domain varlık kuralları, use case işleyicileri ve doğrulama mantığı.
+  - `BCSMS.IntegrationTests` (28 test): Tüm denetleyici (controller) endpoint'lerini, rol yetkilerini ve uçtan uca yaşam döngüsünü SQLite in-memory veritabanı ile doğrulayan ASP.NET Core `WebApplicationFactory` testleri.
+- **React Frontend Test Paketi (28 Test)**:
+  - Vitest + React Testing Library ile bileşen düzeni, rol korumaları (route guards), durum/öncelik rozetleri, hata çevirileri ve form doğrulamaları.
+- **Java Backend Test Paketi (22 Test)**:
+  - Spring Boot tabanlı alternatif backend bileşenlerinin unit ve entegrasyon testleri.
 
 ```bash
-# Run Backend Tests
+# Backend (.NET) Testlerini Çalıştırma
 dotnet test backend/dotnet/BCSMS.sln
 
-# Run Frontend Tests
+# Frontend (React) Testlerini Çalıştırma
 cd frontend/web && npm test -- --run
 ```
 
 ---
 
-## Running Locally with Docker
+## Canlı Ortam (Deployment)
 
-### Prerequisites
-- [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/)
+Projenin canlı ortam dağıtımı bulut platformları üzerinde aktif olarak çalışmaktadır:
 
-### Quick Start
+- **Frontend**: **Vercel** üzerinde barındırılan React SPA ([https://bursa-city-service-management.vercel.app](https://bursa-city-service-management.vercel.app)).
+- **Backend API**: **Render** platformu üzerinde konteynerize edilmiş .NET 8 Web API ([https://bcsms-api.onrender.com](https://bcsms-api.onrender.com)).
+- **Veritabanı**: **Neon** yönetilen PostgreSQL 16 veritabanı.
 
-1. Copy the example environment file:
+> [!NOTE]
+> Production ortamında kullanılan ana backend **.NET 8** mimarisidir. Java / Spring Boot projesi mimari alternatif gösterimi amacıyla hazırlanmıştır.
+> 
+> Canlı backend API'nin kök adresi (`/`) doğrudan bir arayüz içermez. Sunucu sağlık durumunu kontrol etmek için `/health` endpoint'ini ([https://bcsms-api.onrender.com/health](https://bcsms-api.onrender.com/health)) kullanabilirsiniz.
+
+---
+
+## Docker ile Yerel Çalıştırma
+
+### Önkoşullar
+- [Docker](https://www.docker.com/) ve [Docker Compose](https://docs.docker.com/compose/)
+
+### Hızlı Başlangıç
+
+1. Örnek ortam değişkenleri dosyasını kopyalayın:
    ```bash
    cp .env.example .env
    ```
 
-2. Build and start all services:
+2. Tüm servisleri derleyin ve başlatın:
    ```bash
    docker compose up --build -d
    ```
 
-3. Open the application:
-   - **Frontend Web Application**: [http://localhost:3000](http://localhost:3000)
-   - **API Direct / Swagger UI**: [http://localhost:5123/swagger](http://localhost:5123/swagger)
-   - **Health Endpoint**: [http://localhost:3000/health](http://localhost:3000/health) or [http://localhost:5123/health](http://localhost:5123/health)
+3. Uygulamaya erişin:
+   - **Frontend Web Uygulaması**: [http://localhost:3000](http://localhost:3000)
+   - **API Doğrudan / Swagger UI**: [http://localhost:5123/swagger](http://localhost:5123/swagger)
+   - **Health Check Endpoint**: [http://localhost:3000/health](http://localhost:3000/health) veya [http://localhost:5123/health](http://localhost:5123/health)
 
-### Managing Data Persistence
-- **Stop services (preserving PostgreSQL database data)**:
+### Veritabanı Durum Yönetimi
+- **Servisleri Durdurma (Verileri koruyarak)**:
   ```bash
   docker compose down
   ```
-- **Stop services and remove PostgreSQL database volume**:
+- **Servisleri Durdurma ve Veritabanı Volume'ünü Temizleme**:
   ```bash
   docker compose down -v
   ```
 
 ---
 
-## Demo Accounts
+## Demo Kullanıcı Hesapları
 
-Deterministic development demo accounts seeded automatically for evaluation:
+Değerlendirme süreçleri için `DbSeeder.cs` ile otomatik oluşturulan hazır test hesapları:
 
-| Role | Email | Password | Department | Notes |
+| Rol | E-posta | Şifre | Birim | Açıklama |
 |---|---|---|---|---|
-| **Manager** | `manager@bursa.bel.tr` | `Demo12345!` | Fen İşleri | Full review, assignment, closure rights |
-| **Employee 1** | `employee1@bursa.bel.tr` | `Demo12345!` | Fen İşleri | Field worker for Fen İşleri tasks |
-| **Employee 2** | `employee2@bursa.bel.tr` | `Demo12345!` | Park ve Bahçeler | Field worker for Park ve Bahçeler tasks |
-| **Admin** | `admin@bursa.bel.tr` | `Demo12345!` | Administration | Platform administrator |
-| **Citizen** | *(Self-register)* | *(Your Password)* | N/A | Register directly from [http://localhost:3000/register](http://localhost:3000/register) |
+| **Yönetici (Manager)** | `manager@bursa.bel.tr` | `Demo12345!` | Fen İşleri | İnceleme, birim/personel atama ve kapatma yetkileri |
+| **Saha Personeli 1 (Employee)** | `employee1@bursa.bel.tr` | `Demo12345!` | Fen İşleri | Fen İşleri saha görevleri personeli |
+| **Saha Personeli 2 (Employee)** | `employee2@bursa.bel.tr` | `Demo12345!` | Park ve Bahçeler | Park ve Bahçeler saha görevleri personeli |
+| **Sistem Yöneticisi (Admin)** | `admin@bursa.bel.tr` | `Demo12345!` | Yönetim | Sistem genel yönetim yetkisi |
+| **Vatandaş (Citizen)** | *(Kendi Kaydınız)* | *(Belirlediğiniz Şifre)* | N/A | Doğrudan [http://localhost:3000/register](http://localhost:3000/register) adresinden kayıt olabilirsiniz |
 
 > [!NOTE]
-> All passwords above are strictly local development credentials.
+> Yukarıdaki demo hesaplar ve varsayılan şifreler, sistemin değerlendirilmesi ve test edilmesi amacıyla `DbSeeder` tarafından varsayılan veri olarak tanımlanmıştır.
 
 ---
 
-## Project Structure
+## Alternatif Java / Spring Boot Backend
+
+Proje repository'si içerisinde, aynı Clean Architecture ve domain model kurallarını uygulayan alternatif bir Java / Spring Boot backend uygulaması da yer almaktadır (`backend/java/bcsms-api`). 
+
+Bu versiyon, platform mimarisinin farklı dil ve ekosistemlerde (Java 21, Spring Boot 3, Spring Data JPA, Spring Security) eşdeğer uygulamasını göstermek amacıyla geliştirilmiştir. Canlı production ortamında aktif çalışan servis **.NET 8 Web API** uygulamasıdır.
+
+---
+
+## Proje Yapısı
 
 ```
 BursaCityServiceManagement/
 ├── backend/
-│   └── dotnet/
-│       ├── src/
-│       │   ├── BCSMS.Domain/            # Domain entities, enums, value objects
-│       │   ├── BCSMS.Application/       # Use cases, commands, queries, DTOs
-│       │   ├── BCSMS.Infrastructure/    # EF Core, PostgreSQL, security services
-│       │   └── BCSMS.API/               # Controllers, middleware, program entry
-│       └── tests/
-│           ├── BCSMS.UnitTests/         # Domain and application unit tests
-│           └── BCSMS.IntegrationTests/  # Integration tests with WebApplicationFactory
+│   ├── dotnet/                          # Production .NET 8 Backend
+│   │   ├── src/
+│   │   │   ├── BCSMS.Domain/            # Domain entities, enums, value objects
+│   │   │   ├── BCSMS.Application/       # Use cases, commands, queries, DTOs
+│   │   │   ├── BCSMS.Infrastructure/    # EF Core, PostgreSQL, güvenlik servisleri
+│   │   │   └── BCSMS.API/               # Controllers, middleware, program girişi
+│   │   └── tests/
+│   │       ├── BCSMS.UnitTests/         # Domain ve uygulama unit testleri (48 test)
+│   │       └── BCSMS.IntegrationTests/  # WebApplicationFactory entegrasyon testleri (28 test)
+│   └── java/                            # Alternatif Java Spring Boot Backend (22 test)
+│       └── bcsms-api/
 ├── frontend/
-│   └── web/                             # React 18 + TypeScript + Vite SPA
+│   └── web/                             # React 18 + TypeScript + Vite SPA (28 test)
 ├── docs/
-│   ├── architecture/                    # System architecture diagrams & design
-│   ├── database/                        # Database schema & ER diagrams
-│   ├── business/                        # Municipal workflow state machines
-│   └── api/                             # RESTful API endpoint specifications
+│   ├── architecture/                    # Mimari diyagramlar ve tasarım dokümanı
+│   ├── database/                        # Veritabanı şeması ve ERD
+│   ├── business/                        # İş akışı ve state machine dokümanları
+│   └── api/                             # RESTful API endpoint spesifikasyonları
 ├── docker/
 │   ├── dotnet/                          # Multi-stage .NET 8 Dockerfile
 │   └── frontend/                        # Multi-stage Node + Nginx Dockerfile
-├── .env.example                         # Safe development environment template
-├── docker-compose.yml                   # Multi-container orchestration
+├── .env.example                         # Güvenli ortam değişkenleri şablonu
+├── docker-compose.yml                   # Çoklu konteyner orkestrasyonu
 └── README.md
 ```
 
 ---
 
-## API Overview
+## API Genel Bakış
 
-Detailed endpoint documentation is available in [docs/api/api-overview.md](docs/api/api-overview.md) and via Swagger UI (`/swagger`).
+Ayrıntılı endpoint dokümantasyonuna [docs/api/api-overview.md](docs/api/api-overview.md) dosyasından erişilebilir. Ayrıca yerel geliştirme ortamında (Development) Swagger UI aracılığıyla (`/swagger`) interaktif API dokümantasyonu sunulmaktadır.
 
-- **`/api/auth`**: User registration and JWT login.
-- **`/api/service-requests`**: Citizen request creation, personal request listing, and detailed timeline queries.
-- **`/api/manager/service-requests`**: Manager municipal overview, review, department/employee assignment, rejection, reopening, and closure.
-- **`/api/employee/service-requests`**: Field employee assigned task listing, work initiation, and resolution.
-- **`/api/categories` & `/api/departments`**: Reference lookups for forms and cascading dropdown filters.
-
----
-
-## Known Limitations & Future Roadmap
-
-The following capabilities are designated for future phases:
-
-- **Refresh Tokens & Sliding Sessions**: Extended token lifecycle management with secure HTTP-only refresh tokens.
-- **Real-Time Citizen Notifications**: Email and SMS alerts for status changes via integration with municipal messaging gateways.
-- **Binary File Uploads**: Direct image and document attachment storage in S3 / Azure Blob Storage.
-- **SLA & Escalation Engine**: Automated threshold tracking and overdue escalation for high-priority service requests.
-- **e-Devlet / KPS Integration**: Identity verification with the Turkish Republic Central Civil Registration System (MERNIS/KPS).
-- **Alternative Java Backend**: Implementation of equivalent Clean Architecture services in Java Spring Boot.
+- **`/api/auth`**: Vatandaş kaydı ve JWT ile kullanıcı girişi.
+- **`/api/service-requests`**: Vatandaş talep oluşturma, kişisel talep listeleme ve detaylı süreç geçmişi sorgulama.
+- **`/api/manager/service-requests`**: Yönetici genel bakış, inceleme, birim/personel atama, reddetme, yeniden açma ve kapatma işlemleri.
+- **`/api/employee/service-requests`**: Saha personeli atanmış görev listeleme, iş başlatma ve tamamlama.
+- **`/api/categories` & `/api/departments`**: Formlar ve filtreleme menüleri için referans veri servisleri.
 
 ---
 
-## License
+## Gelecek Geliştirmeler ve Yol Haritası
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+- **Refresh Token & Kayan Oturumlar**: HTTP-only güvenli refresh token'lar ile uzatılmış oturum yönetimi.
+- **Gerçek Zamanlı Vatandaş Bildirimleri**: Belediye SMS/E-posta entegrasyonu ile durum değişiklik bildirimleri.
+- **Görsel ve Dosya Yükleme**: S3 / Azure Blob Storage entegrasyonu ile fotoğraflı arıza bildirimi.
+- **SLA ve Escalation Motoru**: Yüksek öncelikli talepler için otomatik süre takibi ve gecikme uyarıları.
+- **e-Devlet / KPS Entegrasyonu**: MERNIS / KPS üzerinden vatandaş T.C. Kimlik No doğrulaması.
+
+---
+
+## Lisans
+
+Bu proje MIT Lisansı ile lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakabilirsiniz.
