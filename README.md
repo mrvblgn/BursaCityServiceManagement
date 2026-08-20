@@ -24,7 +24,7 @@ Sistem, vatandaşların hizmet taleplerini ilk başvuru anından itibaren beledi
 ## Temel Özellikler
 
 ### Vatandaş Portalı
-- **Kayıt ve Kimlik Doğrulama**: Güvenli şifre kurallarıyla vatandaş öz kayıt (self-registration) mekanizması.
+- **Kayıt ve Kimlik Doğrulama**: Güvenli şifre kurallarıyla vatandaş kaydı mekanizması.
 - **Hizmet Talebi Oluşturma**: Aktif belediye kategorilerinden (`Yol ve Kaldırım`, `Sokak Aydınlatması ve Elektrik`, `Atık ve Temizlik`, `Park ve Yeşil Alanlar`) seçim yaparak açık adres ve coğrafi koordinat (enlem/boylam) ile talep oluşturma.
 - **Taleplerim ve Takip**: Kişisel talepleri duruma göre filtreleme ve kronolojik süreç geçmişini detaylı inceleme.
 
@@ -132,7 +132,7 @@ Detaylı durum geçiş kuralları ve rol yetkileri [docs/business/request-workfl
 
 ## Güvenlik
 
-- **Şifre Özetleme (Password Hashing)**: Kullanıcı başına rastgele tuz (salt) ile 100.000 iterasyonlu standart PBKDF2 (HMAC-SHA512).
+- **Şifre Özetleme (Password Hashing)**: Kullanıcı başına rastgele salt ile 100.000 iterasyonlu standart PBKDF2 (HMAC-SHA512).
 - **JWT Yetkilendirme**: Rol taleplerini (role claims) içeren, kriptografik olarak imzalanmış HMAC-SHA256 bearer token'lar.
 - **Aktör Doğrulaması**: Kimliği doğrulanmış kullanıcı ID'leri istemci tarafı sahteciliğini önlemek amacıyla sunucu tarafında doğrulanmış JWT claim'lerinden (`User.GetUserId()`) türetilir.
 - **İzolasyon**: `.env.example` içerisindeki tüm bilgiler yerel geliştirme ortamı örnekleridir. Gerçek şifre ve anahtarları içeren `.env` dosyaları gitignore ile korunur.
